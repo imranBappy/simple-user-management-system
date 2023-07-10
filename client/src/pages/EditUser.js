@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Form from '../components/user/Form';
 import { useGetUserQuery, useUpdateUserMutation } from '../features/users/usersApi';
 import Error from '../components/ui/Error';
+import Title from '../components/ui/Title';
+import NavBtn from '../components/ui/NavBtn';
+import { toast } from 'react-toastify';
 
 
 const initialState = {
@@ -15,15 +18,31 @@ const EditUser = () => {
     let { userId } = useParams();
     const [data, setData] = useState(initialState);
     const { data: userData, isError, isLoading } = useGetUserQuery(userId);
-    const [editUser, result] = useUpdateUserMutation()
+    const [editUser, { status }] = useUpdateUserMutation()
+    let navigate = useNavigate();
+
+    useEffect(() => {
+        if (status === 'fulfilled') {
+            toast.success("User successfully edited!")
+            return navigate("/");
+        } else if (status === 'rejected') {
+            toast.error("There was an error!")
+        }
+    }, [status, navigate])
 
     const handleChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
     }
 
     const handleSubmit = (e) => {
-        const newUser = { ...data, _id: userData._id }
-        editUser(newUser);
+        e.preventDefault()
+        const { name, email, phone } = data;
+        const newUser = { name, email, phone, _id: userData._id }
+        if (name && email && phone) {
+            editUser(newUser);
+        } else {
+            toast.warning("Please fill up the form with valid data.")
+        }
     }
 
     useEffect(() => {
@@ -44,17 +63,11 @@ const EditUser = () => {
 
     return (
         <>
-            <h1 className='
-            text-center font-bold text-2xl py-5
-            '>Edit Form</h1>
-
-            <div className=' max-w-4xl m-auto my-5 '>
-                <Link to='/' className=' py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500'>
-                    Views Users List
-                </Link>
+            <Title title={'Edit Form'} />
+            <NavBtn to={'/'} label={' Views Users List'} />
+            <div className=' container '>
                 {content}
             </div>
-
         </>
     );
 };

@@ -1,14 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDeleteUserMutation } from '../../features/users/usersApi';
+import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const UserListItem = (props) => {
     const { id, name, _id } = props;
 
-    const [deleteUser, result] = useDeleteUserMutation()
+    const [deleteUser, { status }] = useDeleteUserMutation();
+    useEffect(() => {
+        if (status === 'fulfilled') {
+            toast.success("User successfully deleted!")
+        } else if (status === 'rejected') {
+            toast.error("There was an error!")
+        }
+    }, [status])
     const handleDelete = () => {
-        deleteUser(_id)
+        deleteUser(_id);
     }
+    console.log(status);
     return (
         <tr className=' bg-white'>
             <td className='border   border-spacing-3 px-5 py-2 '>

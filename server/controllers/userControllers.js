@@ -70,7 +70,7 @@ exports.userDeleteController = async (req, res, next) => {
         if (user) {
             await User.findByIdAndDelete(id);
         }
-        res.json(user)
+        res.status(200).json(user)
     }
     catch (error) {
         next(error)

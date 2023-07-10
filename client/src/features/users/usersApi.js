@@ -2,6 +2,14 @@ import apiSlice from "../api/apiSlice";
 
 export const userApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
+        getUsers: builder.query({
+            query: () => `/users`,
+            providesTags: ['Users', 'User']
+        }),
+        getUser: builder.query({
+            query: (id) => `/users/${id}`,
+            providesTags: ["User"]
+        }),
         postUser: builder.mutation({
             query: ({ ...patch }) => ({
                 url: "/users",
@@ -9,13 +17,7 @@ export const userApi = apiSlice.injectEndpoints({
                 body: patch
             }),
             transformResponse: (response, meta, arg) => response.data,
-
-        }),
-        getUsers: builder.query({
-            query: () => `/users`
-        }),
-        getUser: builder.query({
-            query: (id) => `/users/${id}`
+            invalidatesTags: ['Users']
         }),
         updateUser: builder.mutation({
             query: ({ _id, ...patch }) => ({
@@ -24,6 +26,7 @@ export const userApi = apiSlice.injectEndpoints({
                 body: patch
             }),
             transformResponse: (response, meta, arg) => response.data,
+            invalidatesTags: ['Users', 'User']
         }),
         deleteUser: builder.mutation({
             query: (_id) => ({
@@ -40,7 +43,6 @@ export const userApi = apiSlice.injectEndpoints({
                     const res = await queryFulfilled;
                     const { data } = res;
                     dispatch(userApi.util.updateQueryData('getUsers', {}, (draft) => {
-                        console.log(JSON.parse(JSON.stringify(draft)));
                         const findIndex = draft?.findIndex((user) => user?._id === data?._id)
                         draft.splice(findIndex, 1)
                     }))

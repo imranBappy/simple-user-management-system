@@ -10,12 +10,9 @@ export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: async (args, api, extraOptions) => {
         const result = await baseQuery(args, api, extraOptions);
-        if (result?.error?.status !== 200) {
-            // ERROR ALAERT
-        }
         return result;
     },
-    tagTypes: [],
+    tagTypes: ['Users', 'User'],
     endpoints: (builder) => ({})
 })
 

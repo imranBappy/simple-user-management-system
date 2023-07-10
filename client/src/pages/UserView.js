@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGetUserQuery } from '../features/users/usersApi';
 import Error from '../components/ui/Error';
+import Title from '../components/ui/Title';
+import NavBtn from '../components/ui/NavBtn';
 
 const ViewUser = () => {
     let { userId } = useParams();
@@ -27,15 +29,9 @@ const ViewUser = () => {
 
     return (
         <div className='w-full'>
-            <h1 className='
-            text-center font-bold text-2xl py-5
-            '>User Information</h1>
-            <div className='max-w-4xl m-auto'>
-                <Link to='/' className='  py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500'>
-                    View All User List
-                </Link>
-            </div>
-            <div className=' max-w-4xl m-auto shadow-md my-5 '>
+            <Title title={'User Information'} />
+            <NavBtn to={'/'} label={' Views Users List'} />
+            <div className=' container '>
                 {content}
             </div>
         </div>

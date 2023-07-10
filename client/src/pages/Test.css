@@ -1,5 +1,0 @@
-.scroll-container {
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column-reverse; /* Reverse the order of the content */
-}

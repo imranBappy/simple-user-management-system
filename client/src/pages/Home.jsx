@@ -1,13 +1,13 @@
 import React from 'react';
 import UserList from '../components/user/UserList';
+import NavBtn from '../components/ui/NavBtn';
+import Title from '../components/ui/Title';
 
 const Home = () => {
     return (
         <div className='w-full'>
-            <h1 className='
-            text-center font-bold text-2xl py-5
-            '>User Management System</h1>
-
+            <Title title={'User Management System'} />
+            <NavBtn to={'/add'} label={'  Add User'} />
             <UserList />
         </div>
     );

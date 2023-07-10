@@ -9,24 +9,10 @@ export const userApi = apiSlice.injectEndpoints({
                 body: patch
             }),
             transformResponse: (response, meta, arg) => response.data,
-            async onQueryStarted(
-                arg,
-                { dispatch, getState, queryFulfilled, requestId, extra, getCacheEntry }
-            ) {
-                try {
-                    const data = await queryFulfilled;
-                    console.log(data);
 
-                    // optimistic update
-
-                } catch (error) {
-
-                }
-
-            },
         }),
         getUsers: builder.query({
-            query: (email) => `/users?email=${email}`
+            query: () => `/users`
         }),
         getUser: builder.query({
             query: (id) => `/users/${id}`
@@ -38,44 +24,32 @@ export const userApi = apiSlice.injectEndpoints({
                 body: patch
             }),
             transformResponse: (response, meta, arg) => response.data,
-            async onQueryStarted(
-                arg,
-                { dispatch, getState, queryFulfilled, requestId, extra, getCacheEntry }
-            ) {
-                try {
-                    const data = await queryFulfilled;
-                    console.log(data);
-
-                    // optimistic update
-
-                } catch (error) {
-
-                }
-
-            },
         }),
         deleteUser: builder.mutation({
-            query: ({ _id, ...patch }) => ({
-                url: `/delete/${_id}`,
+            query: (_id) => ({
+                url: `/users/${_id}`,
                 method: 'DELETE',
-                body: patch
             }),
-            transformResponse: (response, meta, arg) => response.data,
+
+            // cash optimistic update
             async onQueryStarted(
                 arg,
-                { dispatch, getState, queryFulfilled, requestId, extra, getCacheEntry }
+                { dispatch, queryFulfilled }
             ) {
                 try {
-                    const data = await queryFulfilled;
-                    console.log(data);
-                    // optimistic update
+                    const res = await queryFulfilled;
+                    const { data } = res;
+                    dispatch(userApi.util.updateQueryData('getUsers', {}, (draft) => {
+                        console.log(JSON.parse(JSON.stringify(draft)));
+                        const findIndex = draft?.findIndex((user) => user?._id === data?._id)
+                        draft.splice(findIndex, 1)
+                    }))
                 } catch (error) {
-
                 }
             },
         }),
     })
 })
 
-export const { useGetUserQuery } = userApi;
+export const { useGetUsersQuery, useGetUserQuery, useDeleteUserMutation, usePostUserMutation, useUpdateUserMutation } = userApi;
 

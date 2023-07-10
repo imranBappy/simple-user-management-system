@@ -3,6 +3,7 @@ const {
     userGetController,
     userPutController,
     userPostController,
+    userDeleteController,
 } = require('../controllers/userControllers');
 
 const router = require('express').Router();

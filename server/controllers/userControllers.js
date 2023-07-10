@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 exports.usersGetController = async (req, res, next) => {
     try {
-        const users = await User.findById({})
+        const users = await User.find({})
         res.json(users)
     } catch (error) {
         next(error)
@@ -11,8 +11,8 @@ exports.usersGetController = async (req, res, next) => {
 
 exports.userGetController = async (req, res, next) => {
     try {
-        const { id } = req.prams;
-        const user = await Auth.findById(id)
+        const { id } = req.params;
+        const user = await User.findById(id);
         res.json(user)
     } catch (error) {
         next(error)
@@ -23,7 +23,8 @@ exports.userPostController = async (req, res, next) => {
     try {
         let { name, email, phone } = req.body;
 
-        const user = await Auth.findOne({ email: email })
+        const user = await User.findOne({ email: email })
+        console.log({ user });
         if (user) {
             return res.status(500).json({ message: 'User Already Exist!' })
         }
@@ -40,7 +41,8 @@ exports.userPostController = async (req, res, next) => {
 exports.userPutController = async (req, res, next) => {
     try {
         const { name, email, phone } = req.body;
-        const user = await User.findById(req.user._id);
+        const { id } = req.params;
+        const user = await User.findById(id);
         if (!user) {
             res.json({
                 message: 'User not found!',
@@ -63,8 +65,8 @@ exports.userPutController = async (req, res, next) => {
 
 exports.userDeleteController = async (req, res, next) => {
     try {
-        const { id } = req.prams;
-        const user = await User.findById(req.user._id);
+        const { id } = req.params;
+        const user = await User.findById(id);
         if (user) {
             await User.findByIdAndDelete(id);
         }

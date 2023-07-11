@@ -13,7 +13,7 @@ const AddUser = () => {
         phone: ""
     })
 
-    const [addUser, { status }] = usePostUserMutation({})
+    const [addUser, { status, isLoading }] = usePostUserMutation({})
     let navigate = useNavigate();
     useEffect(() => {
         if (status === 'fulfilled') {
@@ -42,7 +42,7 @@ const AddUser = () => {
         <>
             <Title title={'User Add Form'} />
             <NavBtn to={'/'} label={'Views Users List'} />
-            <Form handleSubmit={handleSubmit} data={data} handleChange={handleChange} />
+            <Form isLoading={isLoading} handleSubmit={handleSubmit} data={data} handleChange={handleChange} />
         </>
     );
 };

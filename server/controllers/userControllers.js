@@ -22,12 +22,6 @@ exports.userGetController = async (req, res, next) => {
 exports.userPostController = async (req, res, next) => {
     try {
         let { name, email, phone } = req.body;
-
-        const user = await User.findOne({ email: email })
-        console.log({ user });
-        if (user) {
-            return res.status(500).json({ message: 'User Already Exist!' })
-        }
         const newUser = new User({ name, email, phone })
         await newUser.save();
         res.json(newUser)

@@ -4,7 +4,7 @@ export const userApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getUsers: builder.query({
             query: () => `/users`,
-            providesTags: ['Users', 'User']
+            providesTags: ['Users']
         }),
         getUser: builder.query({
             query: (id) => `/users/${id}`,
@@ -16,8 +16,19 @@ export const userApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: patch
             }),
-            transformResponse: (response, meta, arg) => response.data,
-            invalidatesTags: ['Users']
+            // cash optimistic update
+            async onQueryStarted(
+                arg,
+                { dispatch, queryFulfilled }
+            ) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(userApi.util.updateQueryData('getUsers', {}, (draft) => {
+                        draft.push(data)
+                    }))
+                } catch (error) {
+                }
+            },
         }),
         updateUser: builder.mutation({
             query: ({ _id, ...patch }) => ({
@@ -25,8 +36,23 @@ export const userApi = apiSlice.injectEndpoints({
                 method: 'PUT',
                 body: patch
             }),
-            transformResponse: (response, meta, arg) => response.data,
-            invalidatesTags: ['Users', 'User']
+            // cash optimistic update
+            async onQueryStarted(
+                arg,
+                { dispatch, queryFulfilled }
+            ) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(userApi.util.updateQueryData('getUsers', {}, (draft) => {
+                        const findIndex = draft?.findIndex((user) => user?._id === data?._id)
+                        draft[findIndex].name = data.name
+                        draft[findIndex].email = data.email
+                        draft[findIndex].phone = data.phone
+                    }))
+                } catch (error) {
+                }
+            },
+            invalidatesTags: ['User']
         }),
         deleteUser: builder.mutation({
             query: (_id) => ({

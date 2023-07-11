@@ -2,12 +2,13 @@ import React from 'react';
 import { useGetUsersQuery } from '../../features/users/usersApi';
 import Error from '../ui/Error';
 import UserListItem from './UserListItem';
+import Loading from '../ui/Loading';
 
 const UserList = () => {
     const { data, isError, isLoading } = useGetUsersQuery({})
     let content = null;
     if (isLoading) {
-        content = <div className='my-5 text-center'>Loading...</div>
+        content = <Loading />
     } else if (isError) {
         content = <Error message="There was an error!" />
     } else if ((!isLoading && !isLoading) && data.length > 0) {

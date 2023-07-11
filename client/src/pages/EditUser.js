@@ -6,6 +6,7 @@ import Error from '../components/ui/Error';
 import Title from '../components/ui/Title';
 import NavBtn from '../components/ui/NavBtn';
 import { toast } from 'react-toastify';
+import Loading from '../components/ui/Loading';
 
 
 const initialState = {
@@ -18,7 +19,7 @@ const EditUser = () => {
     let { userId } = useParams();
     const [data, setData] = useState(initialState);
     const { data: userData, isError, isLoading } = useGetUserQuery(userId);
-    const [editUser, { status }] = useUpdateUserMutation()
+    const [editUser, { status, isLoading: isUpdateLoading }] = useUpdateUserMutation()
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -52,11 +53,11 @@ const EditUser = () => {
 
     let content = null;
     if (isLoading) {
-        content = <div className='my-5 text-center'>Loading...</div>
+        content = <Loading />
     } else if (isError) {
         content = <Error message="There was an error!" />
     } else if ((!isLoading && !isLoading) && userData) {
-        content = <Form handleSubmit={handleSubmit} data={data} handleChange={handleChange} />
+        content = <Form isLoading={isUpdateLoading} handleSubmit={handleSubmit} data={data} handleChange={handleChange} />
     } else {
         content = <div className='my-5 text-center'>User Not Found!</div>
     }

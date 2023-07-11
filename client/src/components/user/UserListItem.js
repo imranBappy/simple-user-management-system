@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 const UserListItem = (props) => {
     const { id, name, _id } = props;
 
-    const [deleteUser, { status }] = useDeleteUserMutation();
+    const [deleteUser, { status, isLoading }] = useDeleteUserMutation();
     useEffect(() => {
         if (status === 'fulfilled') {
             toast.success("User successfully deleted!")
@@ -35,12 +35,14 @@ const UserListItem = (props) => {
                         Edit
                     </button>
                 </Link>
-                <button onClick={handleDelete} className='shadow-md border-2 border-red-600 rounded-md
+                <button disabled={isLoading} onClick={handleDelete} className='shadow-md border-2 border-red-600 rounded-md
                             py-1 px-3
                             text-red-600
                             hover:shadow-xl
                             '>
-                    Delete
+                    {
+                        isLoading ? "Loading" : "Delete"
+                    }
                 </button>
             </td>
         </tr>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Form = (props) => {
-    const { data, handleChange, handleSubmit } = props;
+    const { data, handleChange, handleSubmit, isLoading } = props;
     return (
         <div className='container'>
             <form onSubmit={handleSubmit} className=' w-full px-10 py-5'>
@@ -49,9 +49,12 @@ const Form = (props) => {
 
                 <div>
                     <button
+                        disabled={isLoading}
                         type="submit"
                         className="submit_btn">
-                        Submit
+                        {
+                            isLoading ? "Loading..." : "Submit"
+                        }
                     </button>
                 </div>
             </form>
